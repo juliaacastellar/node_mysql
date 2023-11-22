@@ -1,1 +1,11 @@
-<h2>home</h2>
+<main>
+    <h2>home</h2>
+
+    {{#each books}}
+    <div>
+        <h3>Titulo: {{this.title}}</h3>
+        <p>Quantidade de paginas: {{this.pageqty}}</p>
+    
+    </div>
+    {{/each}}
+</main>

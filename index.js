@@ -21,9 +21,42 @@ app.use(express.json())
 
 //rotas
 
-app.get('/', req, res => {
-    res.render("home")
+app.post("/register/save", req, res =>{
+    const {title, pageqty} = request.body
+
+    const query = `
+    INSERT INTO books (title, pageqty)
+    VALUES ('${title}', '${pageqty})
+    `
+    conn.query(query, (error) => {
+        if (error) {
+            console.log(error)
+            return
+        }
+        response.redirect("/")
+    })
 })
+
+app.get("/", req, res => {
+    const sql ='SELECT * FROM books'
+
+    conn.query(sql, (error, data) => {
+        if (error) {
+            return console.log(error)
+        }
+        const books = data
+
+        console.log(books)
+
+        res.render("home", {books})
+    })
+})
+
+app.get("/register", req, res =>{
+    res.render("register")
+})
+
+
 
 //conectar com o mysql
 const conn = mysql.createConnection({
