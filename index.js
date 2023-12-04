@@ -29,8 +29,6 @@ app.get("/", (req, res) => {
         }
         const books = data
 
-        console.log(books)
-
         res.render("home", {books})
     })
 })
@@ -56,6 +54,22 @@ app.post("/register/save", (req, res)=>{
     })
 })
 
+app.get('/book/:id', (req, res) =>{
+    const id = req.params.id
+    const sql = `
+    SELECT * FROM books
+    WHERE id=${id}
+    `
+    conn.query(sql, (error, data) => {
+        if (error) {
+            console.log(error)
+            return
+        }
+        const book = data [0]
+    
+        res.render("book", {book})
+    })
+})
 
 //conectar com o mysql
 const conn = mysql.createConnection({
