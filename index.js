@@ -19,22 +19,21 @@ app.use(express.urlencoded({
 app.use(express.json())
 
 //rotas
+app.post('/edit/save', (req, res)=>{
+    const {id, name, pageqty} = req.body
 
-app.get("/", (req, res) => {
-    const sql ='SELECT * FROM books'
-
-    conn.query(sql, (error, data) => {
-        if (error) {
+    const sql = `
+    UPDATE books
+    SET name = '${name}', pageqty = '${pageqty}'
+    WHERE id = ${id}
+    `
+    conn.query(sql, (error)=>{
+        if (error){
             return console.log(error)
         }
-        const books = data
 
-        res.render("home", {books})
+        res.redirect('/')
     })
-})
-
-app.get("/register", (req, res) =>{
-    res.render("register")
 })
 
 app.post("/register/save", (req, res)=>{
@@ -54,6 +53,23 @@ app.post("/register/save", (req, res)=>{
     })
 })
 
+app.get('/edit/:id', (req, res)=>{
+    const id = req.params.id
+    
+    const sql = `
+    SELECT * FROM books
+    WHERE id = ${id}
+    `
+    conn.query(sql, (error, data)=>{
+        if (error) {
+            return console.log(error)
+        }
+        const book = data[0]
+
+        res.render("edit", {book})
+    })
+})
+          
 app.get('/book/:id', (req, res) =>{
     const id = req.params.id
     const sql = `
@@ -70,6 +86,27 @@ app.get('/book/:id', (req, res) =>{
         res.render("book", {book})
     })
 })
+
+app.get("/", (req, res) => {
+    const sql ='SELECT * FROM books'
+
+    conn.query(sql, (error, data) => {
+        if (error) {
+            return console.log(error)
+        }
+        const books = data
+
+        res.render("home", {books})
+    })
+})
+
+app.get("/register", (req, res) =>{
+    res.render("register")
+})
+
+
+
+
 
 //conectar com o mysql
 const conn = mysql.createConnection({
